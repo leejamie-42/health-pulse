@@ -1,8 +1,10 @@
+// (auth)/register/page.tsx
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LogIn } from 'lucide-react';
+import { supabase } from '@lib/supabase/client';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -15,30 +17,49 @@ export default function RegisterPage() {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        if (password !== confirmPassword) {
+        setLoading(true);
+
+        if (password != confirmPassword) {
             setError('Passwords do not match');
+            setLoading(false);
+            return;
         }
         if (password.length < 8) {
             setError('Password must be at least 8 characters');
+            setLoading(false);
             return;
         }
 
-        try {
-            // TODO: Implement Supabase authentication
-            // const { data, error } = await supabase.auth.signUp({
-            //   email,
-            //   password,
-            // });
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+        });
 
-            // Placeholder: redirect to dashboard
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-            router.push('/dashboard');
-        } catch (err) {
-            setError('Failed to create account. Please try again.');
-        } finally {
+        if (error) {
+            setError(error.message);
             setLoading(false);
+            return;
         }
+
+        router.push('/dashboard');
+
+        // try {
+        //     // TODO: Implement Supabase authentication
+        //     // const { data, error } = await supabase.auth.signUp({
+        //     //   email,
+        //     //   password,
+        //     // });
+
+        //     // Placeholder: redirect to dashboard
+        //     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+        //     router.push('/dashboard');
+        // } catch (err) {
+        //     setError('Failed to create account. Please try again.');
+        // } finally {
+        //     setLoading(false);
+        // }
     };
+
 
     const handleDemoLogin = async () => {
         setLoading(true);

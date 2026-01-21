@@ -1,11 +1,11 @@
 'use client';
 import { useState } from 'react';
 import { Plus, Target, Check } from 'lucide-react';
-import { Sidebar } from '../../components/Sidebar';
-import { TopNav } from '../../components/TopNav';
-import { ActiveGoalCard, type ActiveGoal } from '../../components/goals/ActiveGoalCard';
-import { CompletedGoalCard, type CompletedGoal } from '../../components/goals/CompletedGoalCard';
-import { CreateGoalModal } from '../../components/goals/CreateGoalModal';
+import { Sidebar } from '@components/Sidebar';
+import { TopNav } from '@components/TopNav';
+import { ActiveGoalCard, type ActiveGoal } from '@components/goals/ActiveGoalCard';
+import { CompletedGoalCard, type CompletedGoal } from '@components/goals/CompletedGoalCard';
+import { CreateGoalModal } from '@components/goals/CreateGoalModal';
 
 export default function GoalsPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);

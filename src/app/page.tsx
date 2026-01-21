@@ -1,8 +1,8 @@
+// page.tsx (home page)
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import ProductCard from './components/ProductCard';
-import { ThemeController } from './components/ThemeController';
+import { ThemeController } from '@components/ThemeController';
 import { Target, BarChart3, TrendingUp, PartyPopper } from 'lucide-react';
 
 export default function Home() {
