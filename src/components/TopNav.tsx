@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ThemeController } from "./ThemeController";
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@lib/supabase/client';
+import { createSupabaseClient } from '@lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 export function TopNav() {
@@ -13,6 +13,7 @@ export function TopNav() {
     const [email, setEmail] = useState<string | null>(null);
 
     useEffect(() => {
+        const supabase = createSupabaseClient();
         supabase.auth.getUser().then(({ data }) => {
             setEmail(data.user?.email ?? null);
         });

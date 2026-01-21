@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LogIn } from 'lucide-react';
-import { supabase } from '@lib/supabase/client';
+import { createSupabaseClient } from '@lib/supabase/client';
 import { useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
@@ -17,6 +17,7 @@ export default function LoginPage() {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        const supabase = createSupabaseClient();
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,

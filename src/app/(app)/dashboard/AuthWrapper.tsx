@@ -2,7 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { createSupabaseClient } from '@lib/supabase/client';
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -19,10 +19,7 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
 
         // Check auth for non-demo users
         const checkAuth = async () => {
-            const supabase = createBrowserClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-            );
+            const supabase = createSupabaseClient();
 
             const { data: { user } } = await supabase.auth.getUser();
 
