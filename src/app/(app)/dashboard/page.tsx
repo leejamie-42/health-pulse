@@ -1,6 +1,9 @@
 // (app)/dashboard/page.tsx
 'use client';
 import { useSearchParams } from 'next/navigation';
+import { getDashboardData } from '@lib/data/dashboard';
+import { useState, useEffect } from 'react';
+
 import Link from 'next/link';
 import { Target, Activity, Flame, Droplets, TrendingUp, TrendingDown, Plus, Calendar } from 'lucide-react';
 import { Sidebar } from '@components/Sidebar';
@@ -13,24 +16,54 @@ export default function DashboardPage() {
     const searchParams = useSearchParams();
     const isDemo = searchParams.get('demo') == 'true';
 
-    // dummy data
-    const stats = {
-        activeGoals: 3,
-        weeklyWorkouts: 85,
-        avgCalories: 2150,
-        waterTrend: -12,
-    };
+    // // dummy data
+    // const stats = {
+    //     activeGoals: 3,
+    //     weeklyWorkouts: 85,
+    //     avgCalories: 2150,
+    //     waterTrend: -12,
+    // };
+    // const recentGoals = [
+    //     { id: 1, name: 'Lose 10 kg', progress: 65, target: '10 kg', current: '6.5 kg' },
+    //     { id: 2, name: 'Daily 10k steps', progress: 78, target: '10,000', current: '7,800' },
+    //     { id: 3, name: 'Protein 150g/day', progress: 92, target: '150g', current: '138g' },
+    // ];
+
+    const [goals, setGoals] = useState<any[]>([]);
+    const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setLoading(true);
+        getDashboardData(isDemo)
+            .then(({ goals, stats }) => {
+                setGoals(goals ?? []);
+                setStats(stats);
+            })
+            .catch((error) => {
+                console.error('Error loading dashboard data:', error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [isDemo]);
+
+    if (loading || !stats) {
+        return (
+            <AuthWrapper>
+                <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                    <span className="loading loading-spinner loading-lg"></span>
+                </div>
+            </AuthWrapper>
+        );
+    }
 
 
-    const isPositive = stats.waterTrend >= 0;
+    const isPositive = stats?.waterTrend >= 0;
     const TrendIcon = isPositive ? TrendingUp : TrendingDown;
     const TrendColor = isPositive ? 'text-success' : 'text-error';
 
-    const recentGoals = [
-        { id: 1, name: 'Lose 10 kg', progress: 65, target: '10 kg', current: '6.5 kg' },
-        { id: 2, name: 'Daily 10k steps', progress: 78, target: '10,000', current: '7,800' },
-        { id: 3, name: 'Protein 150g/day', progress: 92, target: '150g', current: '138g' },
-    ];
+
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -127,9 +160,15 @@ export default function DashboardPage() {
                                         </div>
 
                                         <div className="space-y-4">
-                                            {recentGoals.map((goal) => (
-                                                <GoalProgressCard key={goal.id} goal={goal} />
-                                            ))}
+                                            {goals.length > 0 ? (
+                                                goals.map((goal) => (
+                                                    <GoalProgressCard key={goal.id} goal={goal} />
+                                                ))
+                                            ) : (
+                                                <p className="text-center text-base-content opacity-70 py-8">
+                                                    No active goals yet. Create one to get started!
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

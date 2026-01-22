@@ -20,6 +20,7 @@ export function TopNav() {
     }, []);
 
     const handleLogout = async () => {
+        const supabase = createSupabaseClient();
         await supabase.auth.signOut();
         router.push('/');
         router.refresh();
