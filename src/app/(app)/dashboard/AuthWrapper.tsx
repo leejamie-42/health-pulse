@@ -8,19 +8,23 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isChecking, setIsChecking] = useState(true);
-    const isDemo = searchParams.get('demo') === 'true';
+    const [isDemoMode, setIsDemoMode] = useState(false);
 
     useEffect(() => {
-        // Skip auth check if in demo mode
-        if (isDemo) {
-            setIsChecking(false);
-            return;
-        }
+        const checkAuthOrDemo = async () => {
+            // Check if demo mode is active (from URL or localStorage)
+            const demoFromUrl = searchParams.get('demo') == 'true';
+            const demoFromStorage = typeof window !== 'undefined' && localStorage.getItem('demoMode') === 'true';
+            const isDemo = demoFromUrl || demoFromStorage;
 
-        // Check auth for non-demo users
-        const checkAuth = async () => {
+            if (isDemo) {
+                setIsDemoMode(true);
+                setIsChecking(false);
+                return;
+            }
+
+            // Check auth for non-demo users
             const supabase = createSupabaseClient();
-
             const { data: { user } } = await supabase.auth.getUser();
 
             if (!user) {
@@ -30,11 +34,11 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
             }
         };
 
-        checkAuth();
-    }, [isDemo, router]);
+        checkAuthOrDemo();
+    }, [searchParams, router]);
 
     // Show loading state while checking auth
-    if (isChecking && !isDemo) {
+    if (isChecking && !isDemoMode) {
         return (
             <div className="min-h-screen bg-base-200 flex items-center justify-center">
                 <span className="loading loading-spinner loading-lg"></span>

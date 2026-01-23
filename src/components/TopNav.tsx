@@ -4,22 +4,24 @@ import { User } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeController } from "./ThemeController";
 
-import { useEffect, useState } from 'react';
+import { useUserProfile } from '@lib/hooks/useUserProfile';
 import { createSupabaseClient } from '@lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useDemoMode } from '@lib/hooks/useDemoMode';
 
-export function TopNav() {
+
+export function TopNav({ isDemo = false }: TopNavProps) {
     const router = useRouter();
-    const [email, setEmail] = useState<string | null>(null);
-
-    useEffect(() => {
-        const supabase = createSupabaseClient();
-        supabase.auth.getUser().then(({ data }) => {
-            setEmail(data.user?.email ?? null);
-        });
-    }, []);
+    const { exitDemoMode } = useDemoMode();
+    const { username, avatarUrl } = useUserProfile();
 
     const handleLogout = async () => {
+        if (isDemo) {
+            exitDemoMode();
+            router.push('/');
+            return;
+        }
+
         const supabase = createSupabaseClient();
         await supabase.auth.signOut();
         router.push('/');
@@ -36,20 +38,33 @@ export function TopNav() {
                     </svg>
                 </label>
                 <span className="text-xl font-bold lg:hidden">HealthPulse</span>
-                {/* auth sanity check */}
-                {email ? (
-                    <span className="text-sm opacity-70">{email}</span>
-                ) : (
-                    <span className="text-sm text-error">not signed in</span>
-                )}
             </div>
             <div className="flex items-center gap-2">
                 <ThemeController />
                 <details className="dropdown dropdown-end">
-                    <summary className="btn btn-circle btn-ghost"><User /></summary>
-                    <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <summary className="btn btn-circle btn-ghost">
+                        {avatarUrl ? (
+                            <div className="avatar">
+                                <div className="w-10 rounded-full">
+                                    <img src={avatarUrl} alt={username || 'User'} />
+                                </div>
+                            </div>
+                        ) : (
+                            <User />
+                        )}
+                    </summary>
+                    {/* <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                         <li><Link href="/profile">Profile</Link></li>
                         <li><button onClick={handleLogout}>Logout</button></li>
+                    </ul> */}
+                    <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg mt-3 border border-base-300">
+                        {username && (
+                            <li className="menu-title">
+                                <span>{username}</span>
+                            </li>
+                        )}
+                        {<li><Link href="/profile">Profile</Link></li>}
+                        <li><button onClick={handleLogout}>{isDemo ? 'Exit Demo' : 'Logout'}</button></li>
                     </ul>
                 </details>
             </div>

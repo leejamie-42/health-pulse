@@ -1,6 +1,5 @@
 // (app)/dashboard/page.tsx
 'use client';
-import { useSearchParams } from 'next/navigation';
 import { getDashboardData } from '@lib/data/dashboard';
 import { useState, useEffect } from 'react';
 
@@ -11,10 +10,11 @@ import { TopNav } from '@components/TopNav';
 import { GoalProgressCard, type Goal } from "@components/GoalProgressCard";
 import { StatCard } from "@components/StatCard";
 import { AuthWrapper } from './AuthWrapper';
+import { useUserProfile } from '@lib/hooks/useUserProfile';
+import { useDemoMode } from '@lib/hooks/useDemoMode';
 
 export default function DashboardPage() {
-    const searchParams = useSearchParams();
-    const isDemo = searchParams.get('demo') == 'true';
+    const { isDemo } = useDemoMode();
 
     // // dummy data
     // const stats = {
@@ -28,6 +28,8 @@ export default function DashboardPage() {
     //     { id: 2, name: 'Daily 10k steps', progress: 78, target: '10,000', current: '7,800' },
     //     { id: 3, name: 'Protein 150g/day', progress: 92, target: '150g', current: '138g' },
     // ];
+
+    const { username, email } = useUserProfile(isDemo);
 
     const [goals, setGoals] = useState<any[]>([]);
     const [stats, setStats] = useState<any>(null);
@@ -63,8 +65,6 @@ export default function DashboardPage() {
     const TrendIcon = isPositive ? TrendingUp : TrendingDown;
     const TrendColor = isPositive ? 'text-success' : 'text-error';
 
-
-
     const getGreeting = () => {
         const hour = new Date().getHours();
         if (hour < 12) return 'Good morning';
@@ -72,6 +72,8 @@ export default function DashboardPage() {
         return 'Good evening';
     };
 
+    // Get display name: username if available, otherwise email without domain, or fallback
+    const displayName = username || email?.split('@')[0] || '';
 
     return (
         <AuthWrapper>
@@ -82,7 +84,7 @@ export default function DashboardPage() {
 
                     {/* Main Content Area */}
                     <div className="drawer-content flex flex-col">
-                        <TopNav />
+                        <TopNav isDemo={isDemo} />
 
                         {/* Page Content */}
                         <div className="flex-1 p-4 lg:p-6">
@@ -99,7 +101,7 @@ export default function DashboardPage() {
 
                                 {/* Welcome Header */}
                                 <div className="mb-8">
-                                    <h1 className="text-3xl font-bold mb-2">{getGreeting()}, Alex</h1>
+                                    <h1 className="text-3xl font-bold mb-2">{getGreeting()}, {displayName}</h1>
                                     <p className="text-base-content opacity-70">Here's your health overview</p>
                                 </div>
 

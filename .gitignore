@@ -44,3 +44,4 @@ next-env.d.ts
 .secret
 .supabase_queries
 .test
+/src/lib/constants

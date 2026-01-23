@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LogIn } from 'lucide-react';
-import { supabase } from '@lib/supabase/client';
+import { User } from 'lucide-react';
+import { createSupabaseClient } from '@lib/supabase/client';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -30,6 +30,7 @@ export default function RegisterPage() {
             return;
         }
 
+        const supabase = createSupabaseClient();
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -42,28 +43,11 @@ export default function RegisterPage() {
         }
 
         router.push('/dashboard');
-
-        // try {
-        //     // TODO: Implement Supabase authentication
-        //     // const { data, error } = await supabase.auth.signUp({
-        //     //   email,
-        //     //   password,
-        //     // });
-
-        //     // Placeholder: redirect to dashboard
-        //     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-        //     router.push('/dashboard');
-        // } catch (err) {
-        //     setError('Failed to create account. Please try again.');
-        // } finally {
-        //     setLoading(false);
-        // }
     };
 
 
     const handleDemoLogin = async () => {
         setLoading(true);
-        // Simulate demo login
         await new Promise(resolve => setTimeout(resolve, 500));
         router.push('/dashboard?demo=true');
     };
@@ -74,7 +58,7 @@ export default function RegisterPage() {
                 <div className="card-body">
                     <div className="flex justify-center mb-4">
                         <div className="rounded-full bg-primary p-3">
-                            <LogIn className="h-8 w-8 text-primary-content" />
+                            <User className="h-8 w-8 text-primary-content" />
                         </div>
                     </div>
 
