@@ -34,7 +34,7 @@ export async function getUserProfile(isDemo: boolean = false) {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .select();
 
     if (error) {
         console.error('Error fetching profile:', error);
@@ -66,14 +66,13 @@ export async function updateUserProfile(profile: Partial<UserProfile>, isDemo: b
         .from('profiles')
         .update(updateData)
         .eq('id', user.id)
-        .select()
-        .single();
+        .select();
 
     if (error) {
         throw error;
     }
 
-    return data;
+    return data?.[0] || null;
 }
 
 export async function uploadAvatar(file: File, isDemo: boolean = false) {

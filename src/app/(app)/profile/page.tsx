@@ -1,3 +1,4 @@
+// (app)/profile/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -33,7 +34,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         loadProfile();
-    }, []);
+    }, [isDemo]);
 
     const loadProfile = async () => {
         try {
@@ -48,6 +49,7 @@ export default function ProfilePage() {
                 setAvatarUrl(profile.avatar_url || '');
             }
         } catch (err) {
+            console.error('Load profile error:', err);
             setError('Failed to load profile');
         } finally {
             setLoading(false);
@@ -55,6 +57,12 @@ export default function ProfilePage() {
     };
 
     const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isDemo) {
+            setError('Cannot upload avatar in demo mode');
+            setTimeout(() => setError(''), 3000);
+            return;
+        }
+
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -81,6 +89,13 @@ export default function ProfilePage() {
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isDemo) {
+            setError('Cannot update profile in demo mode');
+            setTimeout(() => setError(''), 3000);
+            return;
+        }
+
         setError('');
         setSuccess('');
         setSaving(true);
@@ -154,7 +169,7 @@ export default function ProfilePage() {
                 <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
 
                 <div className="drawer-content flex flex-col">
-                    <TopNav />
+                    <TopNav isDemo={isDemo} />
 
                     <div className="flex-1 p-4 lg:p-6">
                         <div className="max-w-4xl mx-auto">
@@ -169,9 +184,19 @@ export default function ProfilePage() {
                                 </button>
                                 <h1 className="text-3xl font-bold">Profile Settings</h1>
                                 <p className="text-base-content opacity-70 mt-2">
-                                    Manage your account and preferences
+                                    {isDemo ? 'Viewing demo profile (read-only)' : 'Manage your account and preferences'}
                                 </p>
                             </div>
+
+                            {/* Demo Info banner */}
+                            {isDemo && (
+                                <div className="alert bg-yellow-400 alert-warning mb-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Demo mode — profile changes are disabled</span>
+                                </div>
+                            )}
 
                             {/* Notifications */}
                             {error && (

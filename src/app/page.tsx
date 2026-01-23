@@ -1,22 +1,13 @@
 // page.tsx (home page)
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { ThemeController } from '@components/ThemeController';
 import { Target, BarChart3, TrendingUp, PartyPopper } from 'lucide-react';
+import { TopNav } from '@components/TopNav';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-neutral">
-      {/* Navbar */}
-      <div className="navbar bg-base-100 shadow-sm">
-        <div className="flex-1">
-          <a className="btn btn-ghost text-xl">HealthPulse</a>
-        </div>
-        <div className="flex-none">
-          <ThemeController />
-        </div>
-      </div>
+      <TopNav />
 
       {/* Hero Section */}
       <div className="hero bg-primary w-full shadow-sm rounded-lg pt-10">

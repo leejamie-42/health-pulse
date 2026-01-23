@@ -1,7 +1,10 @@
+// components/ThemeController.tsx
 'use client';
-import { useEffect, useState } from 'react';
+import { useTheme } from '@lib/hooks/useTheme';
 
 export function ThemeController() {
+    const { theme, toggleTheme, mounted } = useTheme();
+
     return (
         <label className="flex cursor-pointer items-center gap-2">
             <svg
@@ -23,7 +26,9 @@ export function ThemeController() {
             <input
                 type="checkbox"
                 className="toggle theme-controller"
-                value="forest"
+                checked={theme === 'forest'}
+                onChange={toggleTheme}
+                disabled={!mounted}
             />
 
             <svg
@@ -40,7 +45,6 @@ export function ThemeController() {
             >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
-
         </label>
     );
 }
