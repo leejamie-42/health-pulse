@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Calendar, Target, Dumbbell, TrendingUp, LogOut, SquareActivity } from 'lucide-react';
+import { LayoutDashboard, Calendar, Target, Dumbbell, TrendingUp, LogOut, SquareActivity, ChevronLeft } from 'lucide-react';
 import { useDemoMode } from '@lib/hooks/useDemoMode';
 import { createSupabaseClient } from '@lib/supabase/client';
 
@@ -30,8 +30,16 @@ export function Sidebar() {
         router.push('/');
         router.refresh();
     }
+
+    const closeSidebar = () => {
+        const drawerToggle = document.getElementById('sidebar-drawer') as HTMLInputElement;
+        if (drawerToggle) {
+            drawerToggle.checked = false;
+        }
+    };
+
     return (
-        <aside className="bg-base-100 w-64 min-h-full border-r border-white/10 backdrop-blur-sm shadow-lg">
+        <aside className="bg-base-100 min-h-full border-r border-white/10 shadow-lg backdrop-blur-sm">
             <div className="p-4 flex items-center gap-2">
                 <div className="rounded-full bg-primary p-2">
                     <SquareActivity className="h-6 w-6 text-primary-content" />
@@ -57,6 +65,14 @@ export function Sidebar() {
                     );
                 })}
             </ul>
+
+            {/* <button
+                onClick={closeSidebar}
+                className="absolute top-1/2 -translate-y-1/2 -right-10 bg-base-100 border border-white/10 rounded-r-lg px-2 py-3 shadow-lg hover:bg-base-200 transition-colors"
+                aria-label="Close sidebar"
+            >
+                <ChevronLeft className="h-5 w-5" />
+            </button> */}
 
             <div className="absolute bottom-4 left-4 right-4">
                 <button

@@ -50,6 +50,7 @@ export default function ProfilePage() {
             }
         } catch (err) {
             console.error('Load profile error:', err);
+            console.log("isDemo:" + isDemo); // console log here is showing isDemo: false, even when I am on landing page, clicked on is Demo, went to dashboard, then clicked on profile
             if (!isDemo) {
                 setError('Failed to load profile');
             }

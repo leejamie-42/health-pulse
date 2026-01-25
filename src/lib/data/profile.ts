@@ -38,7 +38,10 @@ export async function getUserProfile(isDemo: boolean = false) {
 
     if (error) {
         console.error('Error fetching profile:', error);
-        return null;
+        if (isDemo) {
+            return null;
+        }
+        throw error;
     }
 
     return data as UserProfile;
@@ -56,7 +59,7 @@ export async function updateUserProfile(profile: Partial<UserProfile>, isDemo: b
         throw new Error('User not authenticated');
     }
 
-    // Add updated_at timestamp
+    // add updated_at timestamp
     const updateData = {
         ...profile,
         updated_at: new Date().toISOString(),
@@ -81,6 +84,7 @@ export async function uploadAvatar(file: File, isDemo: boolean = false) {
     }
 
     const supabase = createSupabaseClient();
+
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError || !user) {
