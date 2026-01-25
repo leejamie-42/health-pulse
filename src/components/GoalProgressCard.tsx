@@ -26,7 +26,7 @@ export function GoalProgressCard({ goal }: GoalProgressCardProps) {
             <div className="w-full bg-base-300 rounded-full h-2">
                 <div
                     className="bg-primary h-2 rounded-full transition-all"
-                    style={{ width: `${goal.progress}%` }}
+                    style={{ width: `min(100%, ${goal.progress}%)` }}
                 />
             </div>
 
