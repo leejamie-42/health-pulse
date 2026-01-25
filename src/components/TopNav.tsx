@@ -4,6 +4,7 @@ import { User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
+import { useRef, useEffect, useState } from 'react';
 import { ThemeController } from "./ThemeController";
 import { useUserProfile } from '@lib/hooks/useUserProfile';
 import { createSupabaseClient } from '@lib/supabase/client';
@@ -17,7 +18,7 @@ export function TopNav({ isDemo = false }: TopNavProps) {
     const router = useRouter();
     const pathname = usePathname();
     const { exitDemoMode } = useDemoMode();
-    const { username, avatarUrl } = useUserProfile();
+    const { username, avatarUrl } = useUserProfile(isDemo);
 
     const showUserMenu = pathname != '/';
 

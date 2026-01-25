@@ -34,7 +34,7 @@ export async function getUserProfile(isDemo: boolean = false) {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .select();
+        .single();
 
     if (error) {
         console.error('Error fetching profile:', error);
