@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { User } from 'lucide-react';
+import { User, ArrowLeft } from 'lucide-react';
 import { createSupabaseClient } from '@lib/supabase/client';
 
 export default function RegisterPage() {
@@ -55,6 +55,15 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-primary flex items-center justify-center p-4" >
             <div className="card bg-base-100 shadow-xl w-full max-w-md">
+
+                <button
+                    onClick={() => router.push('/')}
+                    className="btn btn-sm fixed top-10 left-10 mb-4 z-50"
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Home
+                </button>
+
                 <div className="card-body">
                     <div className="flex justify-center mb-4">
                         <div className="rounded-full bg-primary p-3">

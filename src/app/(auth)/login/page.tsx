@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogIn } from 'lucide-react';
+import { LogIn, ArrowLeft } from 'lucide-react';
 import { createSupabaseClient } from '@lib/supabase/client';
 import { useSearchParams } from 'next/navigation';
 
@@ -45,10 +45,16 @@ export default function LoginPage() {
                         <span>Please sign in or select demo mode to continue to dashboard</span>
                     </div>
                 )}
+
+                <button
+                    onClick={() => router.push('/')}
+                    className="btn btn-sm fixed top-10 left-10 mb-4 z-50"
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Home
+                </button>
+
                 <div className="card bg-base-100 shadow-xl w-full max-w-md">
-
-
-
                     <div className="card-body">
                         <div className="flex justify-center mb-4">
                             <div className="rounded-full bg-primary p-3">
