@@ -27,6 +27,14 @@ export function CreateGoalModal({
     setFormData,
     editingGoal
 }: CreateGoalModalProps) {
+    const isCustomUnit = formData.unit && ![
+        'kg', 'steps', 'g', 'ml', 'minutes', 'km',
+        'calories', 'reps', 'sets', 'hours', 'days'
+    ].includes(formData.unit);
+
+    // NEW: Check if "custom" option is selected
+    const isSelectingCustom = formData.unit === '__custom__';
+
     if (!isOpen) return null;
 
     return (
@@ -88,7 +96,7 @@ export function CreateGoalModal({
                         <label className="label">
                             <span className="label-text font-semibold">Unit</span>
                         </label>
-                        <select
+                        {/* <select
                             className="select select-bordered rounded-lg"
                             value={formData.unit}
                             onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
@@ -99,16 +107,75 @@ export function CreateGoalModal({
                             <option value="steps">steps (daily)</option>
                             <option value="g">g (protein/nutrition)</option>
                             <option value="ml">ml (water)</option>
-                            <option value="L">L (liters)</option>
                             <option value="minutes">minutes (exercise)</option>
                             <option value="km">km (distance)</option>
-                            <option value="miles">miles (distance)</option>
                             <option value="calories">calories</option>
                             <option value="reps">reps (exercise)</option>
                             <option value="sets">sets (exercise)</option>
                             <option value="hours">hours</option>
                             <option value="days">days</option>
-                        </select>
+                        </select> */}
+                        {(!isCustomUnit || isSelectingCustom) && (
+                            <select
+                                className="select select-bordered rounded-lg"
+                                value={isSelectingCustom ? '__custom__' : formData.unit}
+                                onChange={(e) => {
+                                    if (e.target.value === '__custom__') {
+                                        // Switch to custom input mode
+                                        setFormData({ ...formData, unit: '__custom__' });
+                                    } else {
+                                        setFormData({ ...formData, unit: e.target.value });
+                                    }
+                                }}
+                                required={!isCustomUnit}
+                            >
+                                <option value="">Select unit</option>
+                                <option value="__custom__">✏️ Enter custom unit...</option>
+                                <option value="kg">kg (weight)</option>
+                                <option value="steps">steps (daily)</option>
+                                <option value="g">g (protein/nutrition)</option>
+                                <option value="ml">ml (water)</option>
+                                <option value="minutes">minutes (exercise)</option>
+                                <option value="km">km (distance)</option>
+                                <option value="calories">calories</option>
+                                <option value="reps">reps (exercise)</option>
+                                <option value="sets">sets (exercise)</option>
+                                <option value="hours">hours</option>
+                                <option value="days">days</option>
+                            </select>
+                        )}
+
+                        {/* Show text input when custom is selected or already has custom value */}
+                        {(isSelectingCustom || isCustomUnit) && (
+                            <div className="mt-2 flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="e.g., lbs, servings, sessions"
+                                    className="input input-bordered rounded-lg flex-1"
+                                    value={isSelectingCustom ? '' : formData.unit}
+                                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                                    required
+                                    autoFocus
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, unit: '' })}
+                                    className="btn btn-ghost btn-sm"
+                                    title="Back to dropdown"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        )}
+
+                        <label className="label">
+                            <span className="label-text-alt text-base-content opacity-60">
+                                {isSelectingCustom || isCustomUnit
+                                    ? 'Enter your custom unit (e.g., "lbs", "servings", "sessions")'
+                                    : 'Choose from common units or enter a custom one'
+                                }
+                            </span>
+                        </label>
                     </div>
 
                     {/* Start Date */}
