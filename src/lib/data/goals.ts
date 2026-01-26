@@ -33,7 +33,7 @@ export interface UpdateGoalInput {
     unit?: string;
     start_date?: string | null;
     deadline_date?: string | null;
-    status?: 'not started' | 'active' | 'completed' | 'failed' | 'paused';
+    status?: 'not_started' | 'active' | 'completed' | 'failed' | 'paused';
 }
 
 export async function getGoals(isDemo: boolean = false): Promise<Goal[]> {
@@ -135,9 +135,9 @@ export async function updateGoal(
     updates: UpdateGoalInput,
     isDemo: boolean = false
 ): Promise<Goal> {
-    // if (isDemo) {
-    //     throw new Error('Cannot update goals in demo mode');
-    // }
+    if (isDemo) {
+        throw new Error('Cannot update goals in demo mode');
+    }
 
     const supabase = createSupabaseClient();
     const { data: { user }, error: userError } = await supabase.auth.getUser();
