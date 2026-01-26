@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Calendar, Target, Dumbbell, TrendingUp, LogOut, SquareActivity, ChevronLeft } from 'lucide-react';
+import { LayoutDashboard, Calendar, Target, Dumbbell, TrendingUp, LogOut, SquareActivity, ChevronLeft, UserPen } from 'lucide-react';
 import { useDemoMode } from '@lib/hooks/useDemoMode';
 import { createSupabaseClient } from '@lib/supabase/client';
 
@@ -16,7 +16,8 @@ export function Sidebar() {
         { href: '/daily-log', icon: Calendar, label: 'Daily Log' },
         { href: '/goals', icon: Target, label: 'Goals' },
         // { href: '/workouts', icon: Dumbbell, label: 'Workouts' },
-        { href: '/progress', icon: TrendingUp, label: 'Progress' },
+        // { href: '/progress', icon: TrendingUp, label: 'Progress' },
+        { href: '/profile', icon: UserPen, label: 'User Profile' }
     ];
 
     const handleLogout = async () => {

@@ -1,9 +1,9 @@
 
-// components/StatCard.tsx
+// components/DashboardStatCard.tsx
 import * as React from "react";
 import type { LucideIcon } from "lucide-react";
 
-type StatCardProps = {
+type DashboardStatCardProps = {
     label: string;
     value: string | number;
     icon: LucideIcon;            // e.g. Target, Activity...
@@ -11,13 +11,13 @@ type StatCardProps = {
     iconColor?: string;          // Tailwind text class, e.g. "text-white"
 };
 
-export function StatCard({
+export function DashboardStatCard({
     label,
     value,
     icon: Icon,
     color = "bg-base-100",
     iconColor = "text-primary",
-}: StatCardProps) {
+}: DashboardStatCardProps) {
     return (
         <div className="card bg-base-100/80 border border-white/10 rounded-xl backdrop-blur-sm shadow-lg">
             <div className="card-body">

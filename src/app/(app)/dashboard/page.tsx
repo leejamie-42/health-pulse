@@ -4,11 +4,11 @@ import { getDashboardData } from '@lib/data/dashboard';
 import { useState, useEffect } from 'react';
 
 import Link from 'next/link';
-import { Target, Activity, Flame, Droplets, TrendingUp, TrendingDown, Plus, Calendar } from 'lucide-react';
+import { Target, Activity, Flame, Droplets, TrendingUp, TrendingDown, Plus, Calendar, Award, Clock } from 'lucide-react';
 import { Sidebar } from '@components/Sidebar';
 import { TopNav } from '@components/TopNav';
-import { GoalProgressCard, type Goal } from "@components/GoalProgressCard";
-import { StatCard } from "@components/StatCard";
+import { DashboardGoalProgressCard, type Goal } from "@components/DashboardGoalProgressCard";
+import { DashboardStatCard } from "@components/DashboardStatCard";
 import { AuthWrapper } from './AuthWrapper';
 import { useUserProfile } from '@lib/hooks/useUserProfile';
 import { useDemoMode } from '@lib/hooks/useDemoMode';
@@ -61,9 +61,13 @@ export default function DashboardPage() {
     }
 
 
-    const isPositive = stats?.waterTrend >= 0;
-    const TrendIcon = isPositive ? TrendingUp : TrendingDown;
-    const TrendColor = isPositive ? 'text-success' : 'text-error';
+    const waterTrendIsPositive = stats?.waterTrend >= 0;
+    const WaterTrendIcon = waterTrendIsPositive ? TrendingUp : TrendingDown;
+    const waterTrendColor = waterTrendIsPositive ? 'text-success' : 'text-error';
+
+    const caloriesTrendIsPositive = stats?.caloriesTrend >= 0;
+    const CaloriesTrendIcon = caloriesTrendIsPositive ? TrendingUp : TrendingDown;
+    const caloriesTrendColor = caloriesTrendIsPositive ? 'text-success' : 'text-error';
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -107,17 +111,68 @@ export default function DashboardPage() {
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                                    <StatCard label="Active Goals" value={stats.activeGoals} icon={Target} color="bg-primary" iconColor="text-white" />
-                                    <StatCard label="Weekly Workouts" value={`${stats.weeklyWorkouts}%`} icon={Activity} color="bg-secondary" iconColor="text-white" />
-                                    <StatCard label="Avg Calories (7d)" value={stats.avgCalories} icon={Flame} color="bg-accent" iconColor="text-white" />
-                                    <div className="card bg-base-100 shadow-lg">
+                                    {/* Active Goals */}
+                                    <DashboardStatCard label="Active Goals" value={stats.activeGoals} icon={Target} color="bg-primary" iconColor="text-white" />
+
+                                    {/* Weekly Workouts */}
+                                    {/* <DashboardStatCard label="Weekly Workouts" value={`${stats.weeklyWorkouts}%`} icon={Activity} color="bg-secondary" iconColor="text-white" /> */}
+                                    <div className="card bg-base-100/80 border border-white/10 rounded-xl backdrop-blur-sm shadow-lg">
                                         <div className="card-body">
                                             <div className="flex items-start justify-between">
                                                 <div>
-                                                    <p className="text-base-content opacity-70 text-sm">Water Trend</p>
-                                                    <p className="text-3xl font-bold mt-2 flex items-center gap-1">
-                                                        <TrendIcon className="h-6 w-6 ${trendColor}" />
-                                                        {stats.waterTrend}%
+                                                    <p className="text-base-content opacity-70 text-sm">This Week's Workouts</p>
+                                                    <p className="text-3xl font-bold mt-2">
+                                                        {stats.weeklyWorkouts}
+                                                    </p>
+                                                    {stats.avgWorkoutMinutes > 0 && (
+                                                        <p className="text-sm text-base-content opacity-60 mt-1 flex items-center gap-1">
+                                                            <Clock className="h-3 w-3" />
+                                                            Avg: {stats.avgWorkoutMinutes} min
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className="rounded-lg bg-secondary bg-opacity-10 p-3">
+                                                    <Activity className="h-6 w-6 text-secondary text-white" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Average Calories */}
+                                    {/* <DashboardStatCard label="Avg Daily Calories (This week)" value={stats.caloriesThisWeek} icon={Flame} color="bg-accent" iconColor="text-white" /> */}
+                                    <div className="card bg-base-100/80 border border-white/10 rounded-xl backdrop-blur-sm shadow-lg">
+                                        <div className="card-body">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <p className="text-base-content opacity-70 text-sm">Avg Daily Calories (This week)</p>
+                                                    <p className="text-3xl font-bold mt-2">
+                                                        {stats.caloriesThisWeek}
+                                                    </p>
+                                                    <p className={`text-sm mt-1 flex items-center gap-1 ${caloriesTrendColor}`}>
+                                                        <CaloriesTrendIcon className="h-4 w-4" />
+                                                        {stats.caloriesTrend > 0 ? '+' : ''}{stats.caloriesTrend}% vs last week
+                                                    </p>
+                                                </div>
+                                                <div className="rounded-lg bg-accent bg-opacity-10 p-3">
+                                                    <Flame className="h-6 w-6 text-info text-white" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Water Trend */}
+                                    {/* <DashboardStatCard label="Avg Daily Water (This week)" value={stats.waterThisWeek} icon={Droplets} color="bg-secondary" iconColor="text-white" /> */}
+                                    <div className="card bg-base-100/80 border border-white/10 rounded-xl backdrop-blur-sm shadow-lg">
+                                        <div className="card-body">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <p className="text-base-content opacity-70 text-sm">Avg Daily Water (This week)</p>
+                                                    <p className="text-3xl font-bold mt-2">
+                                                        {stats.waterThisWeek}ml
+                                                    </p>
+                                                    <p className={`text-sm mt-1 flex items-center gap-1 ${waterTrendColor}`}>
+                                                        <WaterTrendIcon className="h-4 w-4" />
+                                                        {stats.waterTrend > 0 ? '+' : ''}{stats.waterTrend}% vs last week
                                                     </p>
                                                 </div>
                                                 <div className="rounded-lg bg-info bg-opacity-10 p-3">
@@ -164,7 +219,7 @@ export default function DashboardPage() {
                                         <div className="space-y-4">
                                             {goals.length > 0 ? (
                                                 goals.map((goal) => (
-                                                    <GoalProgressCard key={goal.id} goal={goal} />
+                                                    <DashboardGoalProgressCard key={goal.id} goal={goal} />
                                                 ))
                                             ) : (
                                                 <p className="text-center text-base-content opacity-70 py-8">

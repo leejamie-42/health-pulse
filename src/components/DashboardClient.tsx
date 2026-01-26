@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Target, Activity, Flame, Droplets, TrendingUp, TrendingDown, Plus, Calendar } from 'lucide-react';
 import { Sidebar } from '@components/Sidebar';
 import { TopNav } from '@components/TopNav';
-import { GoalProgressCard, type Goal } from "@components/GoalProgressCard";
-import { StatCard } from "@components/StatCard";
+import { DashboardGoalProgressCard, type Goal } from "@components/DashboardGoalProgressCard";
+import { DashboardStatCard } from "@components/DashboardStatCard";
 
 interface DashboardClientProps {
     isDemo: boolean;
@@ -124,7 +124,7 @@ export function DashboardClient({ isDemo }: DashboardClientProps) {
 
                                     <div className="space-y-4">
                                         {recentGoals.map((goal) => (
-                                            <GoalProgressCard key={goal.id} goal={goal} />
+                                            <DashboardGoalProgressCard key={goal.id} goal={goal} />
                                         ))}
                                     </div>
                                 </div>
