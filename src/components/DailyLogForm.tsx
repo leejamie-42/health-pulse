@@ -95,8 +95,14 @@ export function DailyLogForm({
                             <select
                                 className="select select-bordered rounded-lg"
                                 placeholder="select option"
-                                value={formData.workout_completed}
-                                onChange={(e) => setFormData({ ...formData, workout_completed: e.target.value == 'yes' })}
+                                value={
+                                    formData.workout_completed === true
+                                        ? 'yes'
+                                        : formData.workout_completed === false
+                                            ? 'no'
+                                            : ''
+                                }
+                                onChange={(e) => setFormData({ ...formData, workout_completed: e.target.value === '' ? null : e.target.value === 'yes', })}
                             >
                                 <option value="">Select option</option>
                                 <option value="yes">yes</option>
