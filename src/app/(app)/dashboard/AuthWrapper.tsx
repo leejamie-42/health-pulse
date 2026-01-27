@@ -1,10 +1,10 @@
 // app/dashboard/AuthWrapper.tsx
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@lib/supabase/client';
 
-export function AuthWrapper({ children }: { children: React.ReactNode }) {
+function AuthCheck({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isChecking, setIsChecking] = useState(true);
@@ -13,7 +13,7 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const checkAuthOrDemo = async () => {
             // Check if demo mode is active (from URL or localStorage)
-            const demoFromUrl = searchParams.get('demo') == 'true';
+            const demoFromUrl = searchParams.get('demo') === 'true';
             const demoFromStorage = typeof window !== 'undefined' && localStorage.getItem('demoMode') === 'true';
             const isDemo = demoFromUrl || demoFromStorage;
 
@@ -47,4 +47,16 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
     }
 
     return <>{children}</>;
+}
+
+export function AuthWrapper({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
+        }>
+            <AuthCheck>{children}</AuthCheck>
+        </Suspense>
+    );
 }

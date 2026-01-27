@@ -53,7 +53,7 @@ export interface UpdateDailyLogInput {
 
 export async function getDailyLogs(isDemo: boolean = false, limit: number = 30): Promise<DailyLog[]> {
     const supabase = createSupabaseClient();
-    let userId: SVGStringList
+    let userId: string;
 
     if (isDemo) {
         userId = DEMO_USER_ID;

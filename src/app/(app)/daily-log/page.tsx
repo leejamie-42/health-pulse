@@ -1,16 +1,18 @@
 // app/daily-log/page.tsx
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Plus, Calendar, TrendingUp, Activity, Flame } from 'lucide-react';
 import { AuthWrapper } from '../dashboard/AuthWrapper';
-import { Sidebar } from '@components/Sidebar';
-import { TopNav } from '@components/TopNav';
+import { SidebarWrapper } from '@components/SidebarWrapper';
+import { TopNavWrapper } from '@components/TopNavWrapper';
 import { DailyLogForm } from '@components/DailyLogForm';
 import { DailyLogCard } from '@components/DailyLogCard';
 import { useDemoMode } from '@lib/hooks/useDemoMode';
 import { getDailyLogs, getDailyLogByDate, createDailyLog, updateDailyLog, deleteDailyLog, getRecentLogs, type DailyLog } from '@lib/data/dailyLogs';
 
-export default function DailyLogPage() {
+export const dynamic = 'force-dynamic';
+
+function DailyLogContent() {
     const { isDemo } = useDemoMode();
     const [logs, setLogs] = useState<DailyLog[]>([]);
     const [loading, setLoading] = useState(true);
@@ -213,187 +215,197 @@ export default function DailyLogPage() {
 
     if (loading) {
         return (
-            <AuthWrapper>
-                <div className="min-h-screen bg-base-200 flex items-center justify-center">
-                    <span className="loading loading-spinner loading-lg"></span>
-                </div>
-            </AuthWrapper>
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
         );
     }
 
     return (
-        <AuthWrapper>
-            <div className="min-h-screen bg-base-200">
-                <div className="drawer lg:drawer-open">
-                    <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="min-h-screen bg-base-200">
+            <div className="drawer lg:drawer-open">
+                <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
 
-                    <div className="drawer-content flex flex-col">
-                        <TopNav isDemo={isDemo} />
+                <div className="drawer-content flex flex-col">
+                    <TopNavWrapper isDemo={isDemo} />
 
-                        <div className="flex-1 p-4 lg:p-6">
-                            <div className="max-w-7xl mx-auto">
-                                {/* Demo Banner */}
-                                {isDemo && (
-                                    <div className="alert bg-yellow-400 alert-info rounded-lg mb-6">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <span>Demo mode — changes are not saved</span>
-                                    </div>
-                                )}
-
-                                {/* Notifications */}
-                                {error && (
-                                    <div className="alert alert-error mb-6 shadow-lg">
-                                        <span>{error}</span>
-                                    </div>
-                                )}
-
-                                {success && (
-                                    <div className="alert alert-success mb-6 shadow-lg">
-                                        <span>{success}</span>
-                                    </div>
-                                )}
-
-                                {/* Header */}
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <h1 className="text-3xl font-bold mb-2">Daily Log</h1>
-                                        <p className="text-base-content opacity-70">
-                                            Track your daily health metrics
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={handleQuickLogToday}
-                                        className="btn btn-primary gap-2"
-                                    >
-                                        <Calendar className="h-5 w-5" />
-                                        Log Today
-                                    </button>
+                    <div className="flex-1 p-4 lg:p-6">
+                        <div className="max-w-7xl mx-auto">
+                            {/* Demo Banner */}
+                            {isDemo && (
+                                <div className="alert bg-yellow-400 alert-info rounded-lg mb-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Demo mode — changes are not saved</span>
                                 </div>
+                            )}
 
-                                {/* Quick Stats */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                                    <div className="card bg-gradient-to-br from-primary to-primary-focus text-primary-content shadow-lg">
-                                        <div className="card-body">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm opacity-80">Workouts (7d)</p>
-                                                    <p className="text-3xl font-bold">{workoutsCompleted}/7</p>
-                                                </div>
-                                                <Activity className="h-10 w-10 opacity-70" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
-                                        <div className="card-body">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm opacity-80">Avg Calories (7d)</p>
-                                                    <p className="text-3xl font-bold">{avgCalories}</p>
-                                                </div>
-                                                <Flame className="h-10 w-10 opacity-70" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="card bg-gradient-to-br from-info to-info-focus text-info-content shadow-lg">
-                                        <div className="card-body">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm opacity-80">Avg Water (7d)</p>
-                                                    <p className="text-3xl font-bold">{avgWater}ml</p>
-                                                </div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
+                            {/* Notifications */}
+                            {error && (
+                                <div className="alert alert-error mb-6 shadow-lg">
+                                    <span>{error}</span>
                                 </div>
+                            )}
 
-                                {/* Form Section */}
-                                {showForm && (
-                                    <div className="card bg-base-100 shadow-xl mb-8">
-                                        <div className="card-body">
-                                            <h2 className="card-title text-2xl mb-4">
-                                                {editingLog ? 'Edit Log' : 'New Log'}
-                                            </h2>
-                                            <DailyLogForm
-                                                formData={formData}
-                                                setFormData={setFormData}
-                                                onSubmit={handleSubmit}
-                                                onCancel={resetForm}
-                                                isEditing={!!editingLog}
-                                                saving={saving}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Add Log Button (when form is hidden) */}
-                                {!showForm && (
-                                    <button
-                                        onClick={() => {
-                                            setShowForm(true);
-                                            setEditingLog(null);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className="btn btn-outline btn-primary btn-block mb-8 gap-2"
-                                    >
-                                        <Plus className="h-5 w-5" />
-                                        Add New Log
-                                    </button>
-                                )}
-
-                                {/* Logs List */}
-                                <div className="mb-4">
-                                    <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                                        <TrendingUp className="h-6 w-6 text-primary" />
-                                        Recent Logs
-                                    </h2>
+                            {success && (
+                                <div className="alert alert-success mb-6 shadow-lg">
+                                    <span>{success}</span>
                                 </div>
+                            )}
 
-                                {logs.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {logs.map(log => (
-                                            <DailyLogCard
-                                                key={log.id}
-                                                log={log}
-                                                onEdit={handleEdit}
-                                                onDelete={handleDelete}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="card bg-base-100 shadow-lg">
-                                        <div className="card-body items-center text-center py-16">
-                                            <Calendar className="h-16 w-16 text-base-content opacity-20 mb-4" />
-                                            <h3 className="text-xl font-bold mb-2">No logs yet</h3>
-                                            <p className="text-base-content opacity-70 mb-6">
-                                                Start tracking your daily health metrics
-                                            </p>
-                                            <button
-                                                onClick={handleQuickLogToday}
-                                                className="btn btn-primary gap-2"
-                                            >
-                                                <Plus className="h-5 w-5" />
-                                                Create Your First Log
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h1 className="text-3xl font-bold mb-2">Daily Log</h1>
+                                    <p className="text-base-content opacity-70">
+                                        Track your daily health metrics
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={handleQuickLogToday}
+                                    className="btn btn-primary gap-2"
+                                >
+                                    <Calendar className="h-5 w-5" />
+                                    Log Today
+                                </button>
                             </div>
+
+                            {/* Quick Stats */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <div className="card bg-gradient-to-br from-primary to-primary-focus text-primary-content shadow-lg">
+                                    <div className="card-body">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm opacity-80">Workouts (7d)</p>
+                                                <p className="text-3xl font-bold">{workoutsCompleted}/7</p>
+                                            </div>
+                                            <Activity className="h-10 w-10 opacity-70" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
+                                    <div className="card-body">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm opacity-80">Avg Calories (7d)</p>
+                                                <p className="text-3xl font-bold">{avgCalories}</p>
+                                            </div>
+                                            <Flame className="h-10 w-10 opacity-70" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="card bg-gradient-to-br from-info to-info-focus text-info-content shadow-lg">
+                                    <div className="card-body">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm opacity-80">Avg Water (7d)</p>
+                                                <p className="text-3xl font-bold">{avgWater}ml</p>
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Form Section */}
+                            {showForm && (
+                                <div className="card bg-base-100 shadow-xl mb-8">
+                                    <div className="card-body">
+                                        <h2 className="card-title text-2xl mb-4">
+                                            {editingLog ? 'Edit Log' : 'New Log'}
+                                        </h2>
+                                        <DailyLogForm
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            onSubmit={handleSubmit}
+                                            onCancel={resetForm}
+                                            isEditing={!!editingLog}
+                                            saving={saving}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Add Log Button (when form is hidden) */}
+                            {!showForm && (
+                                <button
+                                    onClick={() => {
+                                        setShowForm(true);
+                                        setEditingLog(null);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    className="btn btn-outline btn-primary btn-block mb-8 gap-2"
+                                >
+                                    <Plus className="h-5 w-5" />
+                                    Add New Log
+                                </button>
+                            )}
+
+                            {/* Logs List */}
+                            <div className="mb-4">
+                                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                                    <TrendingUp className="h-6 w-6 text-primary" />
+                                    Recent Logs
+                                </h2>
+                            </div>
+
+                            {logs.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {logs.map(log => (
+                                        <DailyLogCard
+                                            key={log.id}
+                                            log={log}
+                                            onEdit={handleEdit}
+                                            onDelete={handleDelete}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="card bg-base-100 shadow-lg">
+                                    <div className="card-body items-center text-center py-16">
+                                        <Calendar className="h-16 w-16 text-base-content opacity-20 mb-4" />
+                                        <h3 className="text-xl font-bold mb-2">No logs yet</h3>
+                                        <p className="text-base-content opacity-70 mb-6">
+                                            Start tracking your daily health metrics
+                                        </p>
+                                        <button
+                                            onClick={handleQuickLogToday}
+                                            className="btn btn-primary gap-2"
+                                        >
+                                            <Plus className="h-5 w-5" />
+                                            Create Your First Log
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
+                </div>
 
-                    <div className="drawer-side">
-                        <label htmlFor="sidebar-drawer" className="drawer-overlay"></label>
-                        <Sidebar />
-                    </div>
+                <div className="drawer-side">
+                    <label htmlFor="sidebar-drawer" className="drawer-overlay"></label>
+                    <SidebarWrapper />
                 </div>
             </div>
-        </AuthWrapper>
+        </div>
+    );
+}
+
+export default function DailyLogPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
+        }>
+            <AuthWrapper>
+                <DailyLogContent />
+            </AuthWrapper>
+        </Suspense>
     );
 }

@@ -2,12 +2,12 @@
 'use client';
 import Link from 'next/link';
 import { Target, BarChart3, TrendingUp, PartyPopper } from 'lucide-react';
-import { TopNav } from '@components/TopNav';
+import { TopNavWrapper } from '@components/TopNavWrapper';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-neutral">
-      <TopNav />
+      <TopNavWrapper />
 
       {/* Hero Section */}
       <div className="hero bg-primary w-full shadow-sm rounded-lg pt-10">

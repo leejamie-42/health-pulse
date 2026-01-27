@@ -1,16 +1,18 @@
 // app/goals/page.tsx
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Target, Plus, Check, TrendingUp, XCircle, Clock } from 'lucide-react';
 import { AuthWrapper } from '../dashboard/AuthWrapper';
-import { Sidebar } from '@components/Sidebar';
-import { TopNav } from '@components/TopNav';
+import { SidebarWrapper } from '@components/SidebarWrapper';
+import { TopNavWrapper } from '@components/TopNavWrapper';
 import { GoalCard } from '@components/GoalCard';
 import { CreateGoalModal } from '@components/CreateGoalModal';
 import { useDemoMode } from '@lib/hooks/useDemoMode';
 import { getGoals, createGoal, updateGoal, deleteGoal, type Goal } from '@lib/data/goals';
 
-export default function GoalsPage() {
+export const dynamic = 'force-dynamic';
+
+function GoalsPageContent() {
     const { isDemo } = useDemoMode();
     const [goals, setGoals] = useState<Goal[]>([]);
     const [loading, setLoading] = useState(true);
@@ -154,11 +156,9 @@ export default function GoalsPage() {
 
     if (loading) {
         return (
-            <AuthWrapper>
-                <div className="min-h-screen bg-base-200 flex items-center justify-center">
-                    <span className="loading loading-spinner loading-lg"></span>
-                </div>
-            </AuthWrapper>
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
         );
     }
 
@@ -175,7 +175,7 @@ export default function GoalsPage() {
                     <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
 
                     <div className="drawer-content flex flex-col">
-                        <TopNav isDemo={isDemo} />
+                        <TopNavWrapper isDemo={isDemo} />
 
                         <div className="flex-1 p-4 lg:p-6">
                             <div className="max-w-7xl mx-auto">
@@ -383,7 +383,7 @@ export default function GoalsPage() {
 
                     <div className="drawer-side">
                         <label htmlFor="sidebar-drawer" className="drawer-overlay"></label>
-                        <Sidebar />
+                        <SidebarWrapper />
                     </div>
                 </div>
             </div>
@@ -398,5 +398,19 @@ export default function GoalsPage() {
                 editingGoal={editingGoal}
             />
         </AuthWrapper>
+    );
+}
+
+export default function GoalsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
+        }>
+            <AuthWrapper>
+                <GoalsPageContent />
+            </AuthWrapper>
+        </Suspense>
     );
 }

@@ -6,7 +6,7 @@ import { Battery, BatteryLow, BatteryMedium, BatteryFull, BatteryPlus } from 'lu
 interface DailyLogFormProps {
     formData: {
         log_date: string;
-        workout_completed: boolean;
+        workout_completed: boolean | null;
         workout_time_minutes: string;
         steps: string;
         calories_consumed: string;
@@ -94,7 +94,7 @@ export function DailyLogForm({
                             </label>
                             <select
                                 className="select select-bordered rounded-lg"
-                                placeholder="select option"
+                                aria-label="Workout completed"
                                 value={
                                     formData.workout_completed === true
                                         ? 'yes'
@@ -104,7 +104,7 @@ export function DailyLogForm({
                                 }
                                 onChange={(e) => setFormData({ ...formData, workout_completed: e.target.value === '' ? null : e.target.value === 'yes', })}
                             >
-                                <option value="">Select option</option>
+                                <option value="" disabled hidden>Select option</option>
                                 <option value="yes">yes</option>
                                 <option value="no">no</option>
                             </select>
