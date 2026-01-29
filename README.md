@@ -305,12 +305,10 @@ WHERE auth.uid() = user_id
 
 ## Lessons Learned
 
-1. **Supabase is powerful but requires learning**: RLS policies, realtime subscriptions, and storage all have nuances
-2. **TypeScript catches bugs early**: Type safety in database queries prevented many runtime errors
-3. **Component separation matters**: Reusable components (GoalCard, DailyLogForm) made development much faster
-4. **Demo mode is essential for portfolios**: Lets recruiters explore without signup friction
-5. **Real-time validation improves UX**: Users appreciate immediate feedback on forms
-6. **Week-based metrics are intuitive**: Users understand "this week" better than arbitrary date ranges
+1. **Supabase is useful but requires learning**: RLS policies, realtime subscriptions, and storage all have nuances
+2. **Component separation matters**: Reusable components (TopNav, GoalCard) made development much faster
+3. **Demo mode is helpful for portfolios**: Lets users explore easily, without signup friction
+4. **Visual cues & real-time validation improves UX**: Users appreciate visual cues and immediate feedback on forms
 
 
 ## License
