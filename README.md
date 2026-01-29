@@ -27,6 +27,9 @@ This project demonstrates real-world SaaS development patterns including:
 - Email-based authentication with verification
 - Demo mode for portfolio showcase
 
+## Check out the live app here: 
+[health-pulse-jl@vercel.app](health-pulse-jl@vercel.app)
+
 
 ## Why This Project Matters
 This project showcases:
@@ -156,7 +159,7 @@ healthpulse/
 └── public/
 ```
 
----
+
 
 ## 🗄️ Database Setup
 
@@ -219,7 +222,7 @@ All tables have RLS policies that ensure:
 WHERE auth.uid() = user_id
 ```
 
----
+
 
 ## Design Decisions
 
@@ -248,7 +251,7 @@ WHERE auth.uid() = user_id
 - Profile & Goals Data: Pre-populated with demo data
 - Faily logs: Automatic daily data generation
 
----
+
 
 ## Security Features
 
@@ -260,7 +263,7 @@ WHERE auth.uid() = user_id
 - **CSRF Protection**: Built-in Next.js security
 - **Environment Variables**: Sensitive keys never exposed client-side
 
----
+
 
 ## Challenges & Solutions
 
@@ -290,7 +293,7 @@ WHERE auth.uid() = user_id
 - Disabled submit button until valid
 - Visual feedback with colors and icons
 
----
+
 
 ## Future Enhancements
 
@@ -301,7 +304,7 @@ WHERE auth.uid() = user_id
 - **Social Features**: Share achievements, compare with friends
 - **Reminders**: Email/push notifications for daily logging
 
----
+
 
 ## Lessons Learned
 
@@ -315,7 +318,7 @@ WHERE auth.uid() = user_id
 
 This project is open source and available under the MIT License.
 
----
+
 
 ## Author
 
